@@ -35,11 +35,10 @@ SelfAdjointEigenSolver<SparseMatrix<double>> solve(int pot_type, int l, int diff
     SparseMatrix<double> H = T + V;
 
     // solve eigenvalue problem
-    std::cout << "solving..." << std::endl;
     clock_t start = clock();
     SelfAdjointEigenSolver<SparseMatrix<double>> es(H);
     clock_t end = clock();
-    std::cout << "time: " << (double)(end - start) / CLOCKS_PER_SEC << "s" << std::endl;
+    std::cout << "time: " << (double)(end - start) / CLOCKS_PER_SEC << "s. (l = " << l << ")" << std::endl;
 
     return es;
 }

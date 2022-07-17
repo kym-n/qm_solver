@@ -2,4 +2,8 @@
 .vscode/
 Eigen/
 results/
+*.gp
+*.sh
+*.err
+*.log
 *.out
