@@ -1,5 +1,3 @@
-#include <ctime>
-#include <iostream>
 #include "Eigen/Eigen"
 using namespace Eigen;
 
@@ -10,7 +8,7 @@ SparseMatrix<double> diff(int m, int N);
 // potential at r
 double (*get_pot(int type))(double);
 
-SelfAdjointEigenSolver<SparseMatrix<double>> solve(int pot_type, int l, int diff_precision)
+SparseMatrix<double> hamiltonian(int pot_type, int l, int diff_precision)
 {
     // T: kinetic part
     SparseMatrix<double> T = diff(diff_precision, N); // -d^2/dr^2
@@ -33,12 +31,5 @@ SelfAdjointEigenSolver<SparseMatrix<double>> solve(int pot_type, int l, int diff
 
     // H: Hamiltonian matrix
     SparseMatrix<double> H = T + V;
-
-    // solve eigenvalue problem
-    clock_t start = clock();
-    SelfAdjointEigenSolver<SparseMatrix<double>> es(H);
-    clock_t end = clock();
-    std::cout << "time: " << (double)(end - start) / CLOCKS_PER_SEC << "s. (l = " << l << ")" << std::endl;
-
-    return es;
+    return H;
 }

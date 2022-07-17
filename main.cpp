@@ -5,9 +5,9 @@
 using namespace Eigen;
 
 #include "params.h"
-SelfAdjointEigenSolver<SparseMatrix<double>> solve(int pot_type, int l, int diff_precision);
+SparseMatrix<double> hamiltonian(int pot_type, int l, int diff_precision);
 
-#define __MPI__
+// #define __MPI__
 
 #ifdef __MPI__
 #include <mpi.h>
@@ -36,7 +36,7 @@ int main(int argc, char **argv) // pot_type min_l max_l name (N (diff_precision)
     if (myid == 0)
 #endif
     {
-        // output params
+        /* output params */
         std::cout << "output path: " << path_name << std::endl;
         std::cout << "length: " << L << ", ";
         std::cout << "divide: " << N << std::endl;
@@ -44,27 +44,33 @@ int main(int argc, char **argv) // pot_type min_l max_l name (N (diff_precision)
     }
 
     /* exec */
-    clock_t start = clock();
-    std::string id_str = "";
+    clock_t start = clock(); // total time
 #ifdef __MPI__
     // display process id (ex. #000)
-    id_str = std::to_string(myid);
+    std::string id_str = std::to_string(myid);
     while (id_str.length < 3)
         id_str = '0' + id_str;
-    id_str = '#' + id_str + "  ";
+    id_str = '#' + id_str + " ";
 
-    // solve & output for l = min_l...max_l
+    // solve & output for l = min_l...max_l with multi processes
     for (int l = min_l + myid; l <= max_l; l += procs)
 #else
+    std::string id_str = "#single ";
+    // solve & output for l = min_l...max_l
     for (int l = min_l; l <= max_l; l++)
 #endif
     {
-        // solve
-        std::cout << id_str << "solving...(l = " << l << ")" << std::endl;
-        SelfAdjointEigenSolver<SparseMatrix<double>> es = solve(pot_type, l, diff_precision);
+        /* solve */
+        std::cout << id_str << "(l = " << l << ") generating hamiltonian." << std::endl;
+        SparseMatrix<double> H = hamiltonian(pot_type, l, diff_precision);
+        std::cout << id_str << "(l = " << l << ") solving..." << std::endl;
+        clock_t start = clock();
+        SelfAdjointEigenSolver<SparseMatrix<double>> es(H);
+        clock_t end = clock();
+        std::cout << id_str << "(l = " << l << ") time: " << (double)(end - start) / CLOCKS_PER_SEC << "s." << std::endl;
 
-        // write
-        std::cout << id_str << "writing...(l = " << l << ")" << std::endl;
+        /* write */
+        std::cout << id_str << "(l = " << l << ") writing..." << std::endl;
         // eigenvalues to "{l}_vals.txt"
         std::ofstream out_vals(path_name + std::to_string(l) + "_vals.txt");
         out_vals << std::setprecision(vals_prec) << std::fixed << es.eigenvalues() << std::endl;
