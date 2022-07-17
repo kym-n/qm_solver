@@ -38,7 +38,7 @@ int main(int argc, char **argv) // pot_type min_l max_l name (N (diff_precision)
     {
         // output params
         std::cout << "output path: " << path_name << std::endl;
-        std::cout << "length: " << L << std::endl;
+        std::cout << "length: " << L << ", ";
         std::cout << "divide: " << N << std::endl;
         export_params(path_name, pot_type, vals_prec);
     }
