@@ -12,7 +12,7 @@ SparseMatrix<double> hamiltonian(int pot_type, int l, int diff_precision)
 {
     // T: kinetic part
     SparseMatrix<double> T = diff(diff_precision, N); // -d^2/dr^2
-    T /= (2.0 * mu * pow(L / N, 2));
+    T /= (-2.0 * mu * pow(L / N, 2));
 
     // V: potential part
     double (*pot)(double) = get_pot(pot_type); // 0: well, 1: harmo, 2: morse
