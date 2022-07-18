@@ -4,17 +4,14 @@
 #include "Eigen/Eigen"
 using namespace Eigen;
 
+#include "opts.h"
 #include "params.h"
-SparseMatrix<double> hamiltonian(int pot_type, int l, int diff_precision);
-
-// #define __MPI__
 
 #ifdef __MPI__
 #include <mpi.h>
 #endif
 
-const int vals_prec = 12;
-const int vecs_prec = 6;
+SparseMatrix<ldouble> hamiltonian(int pot_type, int l, int diff_precision);
 
 int main(int argc, char **argv) // pot_type min_l max_l name (N (diff_precision))
 {
@@ -48,7 +45,7 @@ int main(int argc, char **argv) // pot_type min_l max_l name (N (diff_precision)
 #ifdef __MPI__
     // display process id (ex. #000)
     std::string id_str = std::to_string(myid);
-    while (id_str.length < 3)
+    while (id_str.length() < 3)
         id_str = '0' + id_str;
     id_str = '#' + id_str + " ";
 
@@ -62,10 +59,10 @@ int main(int argc, char **argv) // pot_type min_l max_l name (N (diff_precision)
     {
         /* solve */
         std::cout << id_str << "(l = " << l << ") generating hamiltonian." << std::endl;
-        SparseMatrix<double> H = hamiltonian(pot_type, l, diff_precision);
+        SparseMatrix<ldouble> H = hamiltonian(pot_type, l, diff_precision);
         std::cout << id_str << "(l = " << l << ") solving..." << std::endl;
         clock_t start = clock();
-        SelfAdjointEigenSolver<SparseMatrix<double>> es(H);
+        SelfAdjointEigenSolver<SparseMatrix<ldouble>> es(H);
         clock_t end = clock();
         std::cout << id_str << "(l = " << l << ") time: " << (double)(end - start) / CLOCKS_PER_SEC << "s." << std::endl;
 

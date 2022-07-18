@@ -1,22 +1,23 @@
 #include <cmath>
+#include "opts.h"
 #include "params.h"
 
 // morse potential
-double morse(double r)
+ldouble morse(ldouble r)
 {
-    double w = 1.0 - exp(-a * (r - r_e));
+    ldouble w = 1.0 - exp(-a * (r - r_e));
     return D_e * (w * w - 1);
 }
 
 // harmonic oscillator
-double harmo(double r)
+ldouble harmo(ldouble r)
 {
-    double w = a * (r - r_e);
+    ldouble w = a * (r - r_e);
     return D_e * w * w;
 }
 
 // well potential
-double well(double r)
+ldouble well(ldouble r)
 {
     if (1.5 < r && r < 2.5)
         return 0;
@@ -25,7 +26,7 @@ double well(double r)
 }
 
 // returns potential as function
-double (*get_pot(int type))(double)
+ldouble (*get_pot(int type))(ldouble)
 {
     switch (type)
     {

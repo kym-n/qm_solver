@@ -3,8 +3,10 @@
 #include <iomanip>
 #include <iostream>
 
+#include "opts.h"
+
 int N = 4096;           // division
-double L = 8;           // length of range
+ldouble L = 8;          // length of range
 int diff_precision = 6; // error: o(h^m) (h = L / N, m = diff_precision)
 
 #define BOHR_TO_METOR 5.29177210903e-11  // bohr to m (length)
@@ -15,23 +17,23 @@ int diff_precision = 6; // error: o(h^m) (h = L / N, m = diff_precision)
 
 #ifdef __MORSE__ // direct input constants of morse potential
 
-double r_e = 2.0;
-double mu = 12800;
-double D_e = 0.45;
-double a = 1.25;
+ldouble r_e = 2.0;
+ldouble mu = 12800;
+ldouble D_e = 0.45;
+ldouble a = 1.25;
 
-double om = a * sqrt(2.0 * D_e / mu);
-double omx = om * om / (4.0 * D_e);
+ldouble om = a * sqrt(2.0 * D_e / mu);
+ldouble omx = om * om / (4.0 * D_e);
 
 #else // input measured values
 
-double om = 2358.57 / HARTREE_TO_CMREV;    // hatree
-double omx = 14.324109 / HARTREE_TO_CMREV; // hatree
-double r_e = 1.09768e-10 / BOHR_TO_METOR;  // bohr
-double mu = (28.0134 / 4) * U_TO_E;        // m_e
+ldouble om = 2358.57 / HARTREE_TO_CMREV;    // hatree
+ldouble omx = 14.324109 / HARTREE_TO_CMREV; // hatree
+ldouble r_e = 1.09768e-10 / BOHR_TO_METOR;  // bohr
+ldouble mu = (28.0134 / 4) * U_TO_E;        // m_e
 
-double D_e = om * om / (4 * omx);   // hatree
-double a = om / sqrt(2 * D_e / mu); // bohr^-1
+ldouble D_e = om * om / (4 * omx);   // hatree
+ldouble a = om / sqrt(2 * D_e / mu); // bohr^-1
 
 #endif
 
@@ -58,7 +60,7 @@ void export_params(std::string path_name, int pot_type, int vals_prec)
     case 1:
         for (int i = 0; i < N; i++)
         {
-            double num = 0.5 + i;
+            ldouble num = 0.5 + i;
             out_vals << om * num << std::endl;
         }
         break;
@@ -67,7 +69,7 @@ void export_params(std::string path_name, int pot_type, int vals_prec)
     default:
         for (int i = 0;; i++)
         {
-            double num = 0.5 + i;
+            ldouble num = 0.5 + i;
             out_vals << om * num - omx * num * num - D_e << std::endl;
             if (num >= om / (2.0 * omx))
                 break;
